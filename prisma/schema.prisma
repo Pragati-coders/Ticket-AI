@@ -1,0 +1,206 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ADMIN
+  AGENT
+  CUSTOMER
+}
+
+enum TicketStatus {
+  OPEN
+  IN_PROGRESS
+  WAITING_ON_CUSTOMER
+  RESOLVED
+  CLOSED
+}
+
+enum TicketPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum TicketSentiment {
+  POSITIVE
+  NEUTRAL
+  NEGATIVE
+}
+
+enum ReplyVisibility {
+  PUBLIC
+  INTERNAL
+}
+
+enum KnowledgeBaseStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum NotificationType {
+  TICKET_ASSIGNED
+  TICKET_UPDATED
+  AI_REPLY_READY
+  SYSTEM
+}
+
+model User {
+  id             String         @id @default(cuid())
+  clerkId        String         @unique
+  email          String         @unique
+  name           String?
+  imageUrl       String?
+  role           Role           @default(CUSTOMER)
+  department     String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  ticketsCreated Ticket[]       @relation("TicketCustomer")
+  ticketsAssigned Ticket[]      @relation("TicketAgent")
+  replies        Reply[]
+  logs           Log[]
+  notifications  Notification[]
+
+  @@index([role])
+  @@index([email])
+}
+
+model Category {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  department  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  tickets     Ticket[]
+}
+
+model Ticket {
+  id              String          @id @default(cuid())
+  title           String
+  description     String
+  status          TicketStatus    @default(OPEN)
+  priority        TicketPriority  @default(MEDIUM)
+  sentiment       TicketSentiment @default(NEUTRAL)
+  department      String?
+  aiSummary       String?
+  aiSuggestedReply String?
+  customerId      String
+  assignedAgentId String?
+  categoryId      String?
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  resolvedAt      DateTime?
+  customer        User            @relation("TicketCustomer", fields: [customerId], references: [id], onDelete: Cascade)
+  assignedAgent   User?           @relation("TicketAgent", fields: [assignedAgentId], references: [id], onDelete: SetNull)
+  category        Category?       @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  replies         Reply[]
+  attachments     Attachment[]
+  logs            Log[]
+  notifications   Notification[]
+
+  @@index([status])
+  @@index([priority])
+  @@index([customerId])
+  @@index([assignedAgentId])
+  @@index([categoryId])
+  @@index([createdAt])
+}
+
+model Reply {
+  id         String          @id @default(cuid())
+  body       String
+  visibility ReplyVisibility @default(PUBLIC)
+  isAiDraft  Boolean         @default(false)
+  ticketId   String
+  authorId   String
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+  ticket     Ticket          @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  author     User            @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+  @@index([authorId])
+}
+
+model Attachment {
+  id        String   @id @default(cuid())
+  fileName  String
+  fileUrl   String
+  fileType  String
+  fileSize  Int
+  ticketId  String
+  createdAt DateTime @default(now())
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+}
+
+model KnowledgeBase {
+  id          String              @id @default(cuid())
+  title       String
+  slug        String              @unique
+  content     String
+  sourceUrl   String?
+  status      KnowledgeBaseStatus @default(DRAFT)
+  department  String?
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  embeddings  Embedding[]
+
+  @@index([status])
+  @@index([department])
+}
+
+model Embedding {
+  id              String        @id @default(cuid())
+  content         String
+  vector          Unsupported("vector(1536)")?
+  knowledgeBaseId String
+  createdAt       DateTime      @default(now())
+  knowledgeBase   KnowledgeBase @relation(fields: [knowledgeBaseId], references: [id], onDelete: Cascade)
+
+  @@index([knowledgeBaseId])
+}
+
+model Log {
+  id        String   @id @default(cuid())
+  action    String
+  entity    String
+  entityId  String
+  metadata  Json?
+  userId    String?
+  ticketId  String?
+  createdAt DateTime @default(now())
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  ticket    Ticket?  @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([entity, entityId])
+  @@index([userId])
+  @@index([ticketId])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  type      NotificationType
+  title     String
+  body      String
+  readAt    DateTime?
+  userId    String
+  ticketId  String?
+  createdAt DateTime         @default(now())
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  ticket    Ticket?          @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([userId, readAt])
+  @@index([ticketId])
+}

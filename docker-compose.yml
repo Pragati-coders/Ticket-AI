@@ -1,0 +1,14 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ticketai
+    ports:
+      - "5432:5432"
+    volumes:
+      - ticketai-db:/var/lib/postgresql/data
+
+volumes:
+  ticketai-db:
