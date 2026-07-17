@@ -1,5 +1,3 @@
-You are a Senior Staff Software Engineer at Vercel.
-
 Your task is to build a production-ready enterprise SaaS application called TicketAI.
 
 This project is NOT a CRUD tutorial.
@@ -48,7 +46,5 @@ Before writing any code create:
 6. Prisma Models
 7. Component Tree
 8. Architecture Diagram
-
-Do not generate placeholder code.
 
 Everything must be production ready.
