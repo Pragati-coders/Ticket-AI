@@ -46,5 +46,3 @@ Before writing any code create:
 6. Prisma Models
 7. Component Tree
 8. Architecture Diagram
-
-Everything must be production ready.
