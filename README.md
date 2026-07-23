@@ -35,14 +35,3 @@ Project Rules
 • Mobile Responsive
 • Accessible UI
 • Dark and Light Mode
-
-Before writing any code create:
-
-1. Folder Structure
-2. Database Design
-3. Feature Breakdown
-4. Route Structure
-5. API Design
-6. Prisma Models
-7. Component Tree
-8. Architecture Diagram
