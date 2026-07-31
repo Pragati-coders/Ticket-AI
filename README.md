@@ -1,4 +1,4 @@
-Your task is to build a production-ready enterprise SaaS application called TicketAI.
+To build a production-ready enterprise SaaS application called TicketAI.
 
 This project is NOT a CRUD tutorial.
 
