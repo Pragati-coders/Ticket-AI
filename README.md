@@ -1,6 +1,6 @@
 To build a production-ready enterprise SaaS application called TicketAI.
 
-This project is NOT a CRUD tutorial.
+This project is NOT a Youtube, CURD tutorial.
 
 It must be production quality and portfolio worthy for FAANG, product companies, startups and mid-size companies in 2026.
 
