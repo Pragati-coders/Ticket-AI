@@ -4,8 +4,6 @@ This project is NOT a CURD tutorial.
 
 It must be production quality and portfolio worthy for FAANG, product companies, startups and mid-size companies in 2026.
 
-Every architectural decision should follow modern software engineering practices.
-
 Tech Stack
 
 • Next.js 15 App Router
