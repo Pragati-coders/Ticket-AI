@@ -33,3 +33,13 @@ Project Rules
 • Mobile Responsive
 • Accessible UI
 • Dark and Light Mode
+
+---
+
+<div align="center">
+
+### 🚀 Built with ❤️ using Next.js 15, TypeScript, Prisma & Supabase
+
+**If you like this project, don't forget to leave a ⭐ on GitHub!**
+
+</div>
