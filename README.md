@@ -39,5 +39,6 @@ Project Rules
 <div align="center">
 
 **If you like this project, don't forget to leave a ⭐ on GitHub!**
+Support me 
 
 </div>
